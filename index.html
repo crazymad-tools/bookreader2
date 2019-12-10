@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .book-list {
+        margin: 0;
+        padding: 0;
+      }
+      .book-list li {
+        cursor: pointer;
+        list-style: none;
+        margin: 10px 0;
+        padding: 0;
+        transition: all 0.3s;
+      }
+      .book-list li:hover {
+        color: #1890ff;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="book-list">
+      <li onclick="jump()">临高启明</li>
+      <li onclick="jump()">大医凌然</li>
+    </ul>
+    <script>
+      function jump () {
+        document.location.href = 'reader.html';
+      }
+    </script>
+  </body>
+</html>
