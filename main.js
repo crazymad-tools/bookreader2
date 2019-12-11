@@ -1,26 +1,32 @@
-const {app, BrowserWindow} = require('electron');
-const ipc = require('electron').ipcMain;
-const path = require('path');
+const { app, BrowserWindow, Menu } = require("electron");
+const path = require("path");
+const ipc = require('electron').ipcMain;;
 
-function createwindow () {
+// console.log(app.getPath("documents"));
+
+function createWindow() {
   let win = new BrowserWindow({
     width: 800,
     height: 600,
-    // frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, './public/renderer.js')
+      preload: path.join(__dirname, "./public/renderer.js")
     }
   });
+  win.webContents.openDevTools({ mode: "detach" });
+  win.loadURL("http://localhost:3001");
 
-  // win.webContents.openDevTools({mode:'detach'});
-  // win.setAlwaysOnTop(true);
-  win.setResizable(false);
-  win.loadFile('index.html');
-  win.on('closed', () => {
-    win = null;
+  // setTimeout(() => {
+  ipc.on("init", () => {
+    win.webContents.send(
+      "init",
+      JSON.stringify({
+        document: app.getPath("documents")
+      })
+    );
   });
+  // }, 3000);
 }
 
-
-app.on('ready', createwindow);
+app.on("ready", createWindow);
