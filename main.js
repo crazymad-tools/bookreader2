@@ -2,8 +2,6 @@ const { app, BrowserWindow, Menu } = require("electron");
 const path = require("path");
 const ipc = require('electron').ipcMain;;
 
-// console.log(app.getPath("documents"));
-
 function createWindow() {
   let win = new BrowserWindow({
     width: 800,

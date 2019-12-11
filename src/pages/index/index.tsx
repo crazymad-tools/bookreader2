@@ -15,6 +15,10 @@ const IndexPage: React.FC<Props> = props => {
     props.history.push("/reader");
   }
 
+  useEffect(() => {
+    console.log('after update', props.books);
+  }, [props.books]);
+
   return (
     <div className="index-page">
       <ul className="book-list">
@@ -35,6 +39,7 @@ const IndexPage: React.FC<Props> = props => {
 export default withRouter(
   connect(
     (state: any) => {
+      console.log(state.books);
       return {
         books: state.books.books
       };

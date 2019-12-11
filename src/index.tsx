@@ -3,14 +3,19 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "./models";
 import App from "./App";
-import "./index.css";
 import * as serviceWorker from "./serviceWorker";
+import ConfigService from "./service/ConfigService";
+import "./index.css";
 
+const path = window.require("path");
+const fs = window.require("fs");
 const ipc = window.require("electron").ipcRenderer;
 ipc.send("init");
 ipc.on("init", (e: any, args: any) => {
-  console.log(args);
   args = JSON.parse(args);
+
+  ConfigService.loadBooks(args.document, store);
+
   store.dispatch({
     type: "config/updateDocumentPath",
     payload: {
