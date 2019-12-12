@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { compose } from "redux";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 
 import "./index.scss";
@@ -12,12 +11,14 @@ interface Props extends RouteComponentProps {
 
 const IndexPage: React.FC<Props> = props => {
   function toReader(book: Book) {
-    props.history.push("/reader");
+    props.dispatch({
+      type: "books/setCurrentBook",
+      payload: {
+        currentBook: book
+      }
+    });
+    props.history.push("/book");
   }
-
-  useEffect(() => {
-    console.log('after update', props.books);
-  }, [props.books]);
 
   return (
     <div className="index-page">
@@ -39,7 +40,6 @@ const IndexPage: React.FC<Props> = props => {
 export default withRouter(
   connect(
     (state: any) => {
-      console.log(state.books);
       return {
         books: state.books.books
       };

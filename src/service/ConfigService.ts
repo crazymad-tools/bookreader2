@@ -3,7 +3,12 @@ const fs = window.require("fs");
 
 export default class ConfigService {
 
-  static loadBooks (document: string, store: any) {
+  /**
+   * 加载配置
+   * @param document 
+   * @param store 
+   */
+  static loadBooks(document: string, store: any) {
     let folderPath: string = path.resolve(document, 'bookreader').replace(/\\/g, '/');
     if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
@@ -14,7 +19,6 @@ export default class ConfigService {
     } else {
       let data = fs.readFileSync(filePath, 'utf-8').replace('\ufeff', '');
       data = JSON.parse(data);
-      console.log(data);
       store.dispatch({
         type: 'books/update',
         payload: {
@@ -22,6 +26,20 @@ export default class ConfigService {
         }
       });
     }
+  }
+
+  /**
+   * 保存配置
+   * @param document 
+   * @param store 
+   */
+  static saveBooks(document: string, store: any) {
+    let folderPath: string = path.resolve(document, 'bookreader').replace(/\\/g, '/');
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+    }
+    let filePath: string = path.resolve(folderPath, 'books.json');
+    fs.writeFileSync(filePath, `\ufeff${JSON.stringify(store.books.books)}`, 'utf-8');
   }
 
 }

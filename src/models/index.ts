@@ -24,7 +24,7 @@ const store = createStore((state: any, action: Action) => {
   let namespace: string = keys.length === 2 ? keys[0] : '';
   let reducer: string = keys.length === 2 ? keys[1] : '';
   if (keys.length === 2 && reducers[namespace] && reducers[namespace][reducer]) {
-    let namespaceState: any = reducers[namespace][reducer](state[namespace], action);
+    let namespaceState: any = reducers[namespace][reducer](state[namespace], action, state);
     state[namespace] = namespaceState;
     return { ...state };
   } else {
