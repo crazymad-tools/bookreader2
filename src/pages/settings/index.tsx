@@ -29,12 +29,16 @@ const SettingsPage: React.FC<Props> = props => {
         <input value="Crtl + Down" disabled />
       </p>
       <p>
+        <label>快速退出:</label>
+        <input value="Alt + W" disabled />
+      </p>
+      <p>
         <label>最小化:</label>
-        <input value="Crtl + D" disabled />
+        <input value="Alt + D" disabled />
       </p>
       <p>
         <label>返回窗口:</label>
-        <input value="Crtl + B" disabled />
+        <input value="Alt + B" disabled />
       </p>
     </div>
   );

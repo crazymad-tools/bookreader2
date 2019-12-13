@@ -34,7 +34,7 @@ function getContentType(ext) {
 
 function start() {
   const basepath = path.resolve(__dirname, "build");
-  http
+  let server = http
     .createServer((request, response) => {
       let pathname = url.parse(request.url).pathname;
       pathname = pathname.substring(1, pathname.length);
@@ -51,6 +51,8 @@ function start() {
       response.end();
     })
     .listen(8083);
+
+    return server;
 }
 
 module.exports = { start };

@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import { Button } from "../common";
 import "./index.scss";
 import books from "../../models/books";
+import iconv from 'iconv-lite';
 
 const fs = window.require("fs");
 const path = window.require("path");
-const iconv = window.require("iconv-lite");
+// const iconv = window.require("iconv-lite");
 
 interface Props extends RouteComponentProps {
   document: string;

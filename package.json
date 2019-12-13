@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "release": "electron-packager ./ bookreader --out ./release --electron-version 7.1.4 --ignore=node_modules"
+    "release": "electron-packager ./ bookreader --out ./release --electron-version 7.1.4 --ignore=node_modules --overwrite"
   },
   "eslintConfig": {
     "extends": "react-app"

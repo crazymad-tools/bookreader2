@@ -16,7 +16,7 @@ function createWindow() {
     }
   });
   win.setAlwaysOnTop(true);
-  win.webContents.openDevTools({ mode: "detach" });
+  //   win.webContents.openDevTools({ mode: "detach" });
   // win.loadURL("http://localhost:3001");
   win.loadURL("http://localhost:8083");
 
@@ -29,6 +29,9 @@ function createWindow() {
     );
   });
 
+  globalShortcut.register("Alt+W", function() {
+    win.close();
+  });
   globalShortcut.register("Alt+D", function() {
     win.minimize();
   });
@@ -46,11 +49,13 @@ function createWindow() {
   });
   globalShortcut.register("Control+Right", function() {
     win.webContents.send("keyboard", "right");
-    // ipc
   });
-  // }, 3000);
 }
 
-server.start();
+const appServer = server.start();
 
 app.on("ready", createWindow);
+
+app.on("will-quit", function() {
+  appServer.close();
+});
