@@ -12,6 +12,7 @@
 /build
 
 /bookreader-win32-x64
+/release
 
 # misc
 .DS_Store
