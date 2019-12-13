@@ -59,6 +59,7 @@ function createWindow() {
 }
 
 server.start().then(({ server, port }) => {
+  console.log(server);
   appServer = server;
   appPort = port;
   app.on("ready", createWindow);
