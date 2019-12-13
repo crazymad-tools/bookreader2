@@ -3,14 +3,20 @@
   color: lightseagreen;
   background: transparent;
   border: none;
-  margin: 5px;
   border-radius: 3px;;
-  height: 26px;
   cursor: pointer;
   transition: all 0.15s;
+  outline: none;
   &:hover {
     box-shadow: 0 0 5px gray;
     color: #1890ff;
     background: white;
+  }
+  &.middle {
+    height: 26px;
+    margin: 5px;
+  }
+  &.small {
+    height: 20px;
   }
 }

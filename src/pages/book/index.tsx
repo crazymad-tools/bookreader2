@@ -37,6 +37,12 @@ const BookPage: React.FC<Props> = props => {
           offset: match.index
         });
       }
+      if (catalog[0].offset > 0) {
+          catalog = [{
+              name: '未知',
+                offset: 0,
+          }].concat(catalog);
+      }
 
       props.dispatch({
         type: "books/updateReader",

@@ -14,11 +14,31 @@ interface Props {
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
+const ipc = window.require("electron").ipcRenderer;
+
 const Reader: React.FC<Props> = props => {
   const [toolDown, setToolDown] = useState(false);
   const [content, setContent] = useState("");
   const [currentCatalog, setCurrentCatalog] = useState(0);
   const contentRef = useRef<any>(null);
+
+  useEffect(() => {
+    function getKeyboard(e: any, key: string) {
+      if (key === "down") {
+        contentRef.current.scrollTop += contentRef.current.clientHeight - 16;
+      } else if (key === "up") {
+        contentRef.current.scrollTop -= contentRef.current.clientHeight + 16;
+      } else if (key === "left") {
+        prevCapter();
+      } else if (key === "right") {
+        nextCapter();
+      }
+    }
+    ipc.on("keyboard", getKeyboard);
+    return () => {
+      ipc.removeListener("keyboard", getKeyboard);
+    };
+  });
 
   useEffect(() => {
     if (!props.currentBook || props.catalog.length === 0) return;
@@ -27,15 +47,15 @@ const Reader: React.FC<Props> = props => {
       props.currentBook.current < props.catalog[0].offset
         ? props.catalog[0].offset
         : props.currentBook.current;
-    console.log(offset);
+    // console.log(offset);
     for (let i = 0; i < props.catalog.length; i++) {
-      console.log(offset, props.catalog[i].offset);
+      // console.log(offset, props.catalog[i].offset);
       if (offset >= props.catalog[i].offset) {
         let end =
           i < props.catalog.length - 1
             ? props.catalog[i + 1].offset
             : props.content.length;
-        console.log(end);
+        // console.log(end);
         if (offset < end) {
           setCurrentCatalog(i);
           setContent(props.content.substring(offset, end));
@@ -57,7 +77,7 @@ const Reader: React.FC<Props> = props => {
       } else if (e.deltaY < 0) {
         setToolDown(true);
       }
-    }
+    };
   }, []);
 
   function createPage() {}
@@ -78,6 +98,7 @@ const Reader: React.FC<Props> = props => {
       )
     );
     setCurrentCatalog(currentCatalog - 1);
+    contentRef.current.scrollTop = 0;
   }
 
   function nextCapter() {
@@ -97,6 +118,7 @@ const Reader: React.FC<Props> = props => {
     setContent(
       props.content.substring(props.catalog[currentCatalog + 1].offset, end)
     );
+    contentRef.current.scrollTop = 0;
   }
 
   return (
