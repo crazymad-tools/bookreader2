@@ -34,8 +34,9 @@ function getContentType(ext) {
 
 function start() {
   const basepath = path.resolve(__dirname, "build");
-  let server = http
-    .createServer((request, response) => {
+
+  return new Promise((resolve, reject) => {
+    let server = http.createServer((request, response) => {
       let pathname = url.parse(request.url).pathname;
       pathname = pathname.substring(1, pathname.length);
       if (pathname === "" || pathname === "#/") pathname = "index.html";
@@ -49,10 +50,19 @@ function start() {
       response.writeHead(200, { "Content-Type": contentType });
       response.write(data);
       response.end();
-    })
-    .listen(8083);
-
-    return server;
+    });
+    let port = 8083;
+    server.listen(port);
+    server.on("listening", () => {
+      resolve({
+        server,
+        port
+      });
+    });
+    server.on("error", () => {
+      server.listen(++port);
+    });
+  });
 }
 
 module.exports = { start };

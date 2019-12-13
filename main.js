@@ -5,6 +5,9 @@ const { globalShortcut } = require("electron");
 
 const server = require("./server");
 
+let appServer;
+let appPort;
+
 function createWindow() {
   let win = new BrowserWindow({
     width: 300,
@@ -16,9 +19,7 @@ function createWindow() {
     }
   });
   win.setAlwaysOnTop(true);
-  //   win.webContents.openDevTools({ mode: "detach" });
-  // win.loadURL("http://localhost:3001");
-  win.loadURL("http://localhost:8083");
+  win.loadURL(`http://localhost:${appPort}`);
 
   ipc.on("init", () => {
     win.webContents.send(
@@ -50,11 +51,23 @@ function createWindow() {
   globalShortcut.register("Control+Right", function() {
     win.webContents.send("keyboard", "right");
   });
+
+  
+  app.on('second-instance', (event, commandLine, workingDirection) => {
+    win.focus();
+  })
 }
 
-const appServer = server.start();
+server.start().then(({ server, port }) => {
+  appServer = server;
+  appPort = port;
+  app.on("ready", createWindow);
+});
 
-app.on("ready", createWindow);
+const singleLock = app.requestSingleInstanceLock();
+if (!singleLock) {
+  app.quit();
+}
 
 app.on("will-quit", function() {
   appServer.close();

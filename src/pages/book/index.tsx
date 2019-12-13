@@ -69,7 +69,7 @@ const BookPage: React.FC<Props> = props => {
     <div>
       <Link to="/">
         <Button>返回书架</Button>
-      </Link>{" "}
+      </Link>
       <Link to="/reader">
         <Button>继续阅读</Button>
       </Link>
