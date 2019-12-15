@@ -18,6 +18,7 @@ function createWindow() {
       preload: path.join(__dirname, "./public/renderer.js")
     }
   });
+  // win.webContents.openDevTools();
   win.setAlwaysOnTop(true);
   // win.loadURL(`http://localhost:${appPort}`);
   win.loadURL('http://localhost:3000');
@@ -60,7 +61,6 @@ function createWindow() {
 }
 
 server.start().then(({ server, port }) => {
-  console.log(server);
   appServer = server;
   appPort = port;
   app.on("ready", createWindow);

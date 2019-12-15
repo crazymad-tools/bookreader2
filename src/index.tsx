@@ -14,7 +14,7 @@ ipc.send("init");
 ipc.on("init", (e: any, args: any) => {
   args = JSON.parse(args);
 
-  ConfigService.loadBooks(args.document, store);
+  ConfigService.init(args.document, store);
 
   store.dispatch({
     type: "config/updateDocumentPath",

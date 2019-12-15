@@ -9,6 +9,7 @@ interface Props {
   currentBook: Book;
   content: string;
   catalog: Catalog[];
+  settings: ReaderSettings;
 }
 
 let windowWidth = window.innerWidth;
@@ -18,26 +19,38 @@ const ipc = window.require("electron").ipcRenderer;
 
 const BACKGROUND: { [key: string]: string } = {
   BLACK: "rgb(39, 40, 34)",
-  WHITE: "rgb(255, 255, 255)"
+  WHITE: "rgb(255, 255, 255)",
+  GREEN: "rgb(220, 255, 220)",
+  YELLOW: "rgb(255, 255, 220)"
+};
+
+const BACKGROUND_IMAGE: { [key: string]: string } = {
+  YELLOW_PAPER: 'url("/reader/yellow-paper.jpg")',
+  WOOD_PAPER: 'url("/reader/wood-paper.jpg")'
 };
 
 const COLOR: { [key: string]: string } = {
   GRAY: "#aaa",
-  BLACK: "#rgb(10, 10, 10)"
+  BLACK: "rgb(39, 40, 34)",
+  GREEN: "rgb(0, 100, 50)",
+  YELLOW: "rgb(100, 110, 50)"
 };
 
-const SETTINGS: ReaderSettings = {
-  color: "BLACK",
-  size: 14,
-  background: "WHITE"
-};
+const THEMES = [
+  ["BLACK", "GRAY", "夜晚"],
+  ["WHITE", "BLACK", "普通"],
+  ["GREEN", "GREEN", "翠绿"],
+  ["YELLOW", "YELLOW", "护眼"],
+  ["WOOD_PAPER", "BLACK", "木质"],
+  ["YELLOW_PAPER", "BLACK", "羊皮卷"]
+];
 
 const Reader: React.FC<Props> = props => {
   const [toolDown, setToolDown] = useState(false);
+  const [settingsUp, setSettingsUp] = useState(false);
   const [content, setContent] = useState("");
   const [currentCatalog, setCurrentCatalog] = useState(0);
-  const [settings, setSettings] = useState<ReaderSettings>(SETTINGS);
-  const [style, setStyle] = useState<any>({});
+  const [style, setStyle] = useState<any>({ backgroundSize: "100% 100%" });
   const contentRef = useRef<any>(null);
 
   useEffect(() => {
@@ -81,12 +94,14 @@ const Reader: React.FC<Props> = props => {
   }, [props.content, props.catalog, props.currentBook]);
 
   useEffect(() => {
+    let settings = props.settings;
     setStyle({
       color: COLOR[settings.color] || settings.color,
-      background: BACKGROUND[settings.background] || settings.background,
-      fontSize: settings.size
+      backgroundColor: BACKGROUND[settings.background] || "",
+      backgroundImage: BACKGROUND_IMAGE[settings.background] || "",
+      fontSize: settings.size,
     });
-  }, [settings]);
+  }, [props.settings]);
 
   useEffect(() => {
     window.onresize = () => {
@@ -94,7 +109,15 @@ const Reader: React.FC<Props> = props => {
       windowHeight = window.innerHeight;
     };
     contentRef.current.onmousewheel = (e: any) => {
-      if (e.deltaY > 0) {
+      let scrollTop = contentRef.current.scrollTop + e.deltaY;
+      if (scrollTop <= 0) {
+        setToolDown(true);
+      } else if (
+        scrollTop + contentRef.current.clientHeight >=
+        contentRef.current.scrollHeight
+      ) {
+        setToolDown(true);
+      } else if (e.deltaY > 0) {
         setToolDown(false);
       } else if (e.deltaY < 0) {
         setToolDown(true);
@@ -141,6 +164,35 @@ const Reader: React.FC<Props> = props => {
     contentRef.current.scrollTop = 0;
   }
 
+  function changeFontSize(plus: boolean) {
+    let settings = props.settings;
+    if (plus) {
+      settings.size++;
+    } else {
+      settings.size--;
+    }
+    settings.size = Math.max(12, settings.size);
+    settings.size = Math.min(32, settings.size);
+
+    updateSettings(Object.assign({}, settings));
+  }
+
+  function changeTheme(theme: string[]) {
+    let settings = props.settings;
+    settings.background = theme[0];
+    settings.color = theme[1];
+    updateSettings(Object.assign({}, settings));
+  }
+
+  function updateSettings (settings: ReaderSettings) {
+    props.dispatch({
+      type: 'reader/setSettings',
+      payload: {
+        settings: settings
+      }
+    })
+  }
+
   return (
     <div className="reader-page" style={style}>
       <div className={`reader-tool-bar${toolDown ? " down" : ""}`}>
@@ -150,10 +202,55 @@ const Reader: React.FC<Props> = props => {
         </Link>
         <Button onClick={nextCapter}>下一章</Button>
       </div>
-      <div className="pre-content" ref={contentRef}>
+      <div
+        className="pre-content"
+        ref={contentRef}
+        onClick={e => setSettingsUp(false)}
+      >
         <pre>{content}</pre>
       </div>
-      <div className="reader-setting-btn">A</div>
+      <div
+        className="reader-setting-btn"
+        onClick={e => setSettingsUp(true)}
+        hidden={settingsUp}
+      >
+        A
+      </div>
+      <div
+        className="reader-setting-container"
+        style={{
+          transform: settingsUp ? "" : "translateY(100%)",
+          opacity: settingsUp ? 1 : 0
+        }}
+      >
+        <div className="reader-font-setting">
+          <Button onClick={changeFontSize.bind(null, false)}>
+            <span className="iconfont bookreader-icon-minus-circle" />
+          </Button>
+          <span style={{ fontSize: "14px", color: "black" }}>
+            {props.settings.size}
+          </span>
+          <Button onClick={changeFontSize.bind(null, true)}>
+            <span className="iconfont bookreader-icon-plus-circle" />
+          </Button>
+          <Button>字体</Button>
+        </div>
+        <div className="reader-themes">
+          {THEMES.map((theme: string[], index: number) => (
+            <span
+              key={index}
+              style={{
+                backgroundColor: BACKGROUND[theme[0]],
+                backgroundImage: BACKGROUND_IMAGE[theme[0]] || "",
+                color: COLOR[theme[1]]
+              }}
+              onClick={changeTheme.bind(null, theme)}
+            >
+              {theme[2]}
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -163,7 +260,8 @@ export default connect(
     return {
       catalog: state.books.catalog,
       content: state.books.content,
-      currentBook: state.books.currentBook
+      currentBook: state.books.currentBook,
+      settings: state.reader.settings
     };
   },
   (dispatch: Function) => {
