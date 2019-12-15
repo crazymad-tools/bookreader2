@@ -10,3 +10,9 @@ declare interface Catalog {
   name: string;
   offset: number;
 }
+
+declare interface ReaderSettings {
+  size: number,
+  color: string
+  background: string;
+}

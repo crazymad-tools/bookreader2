@@ -2,6 +2,9 @@
   background: rgb(39, 40, 34);
   width: 100%;
   height: 100%;
+  font-size: 14px;
+  font-family: 微软雅黑, Arial, Helvetica, sans-serif;
+  color: #aaa;
 }
 @keyframes move-up {
   from {
@@ -39,17 +42,33 @@
 .pre-content {
   width: 100%;
   height: 100%;
-  padding-top: 32px;
+  padding: 32px 10px 10px 10px;
   box-sizing: border-box;
   overflow: auto;
   margin: 0;
   pre {
     white-space: pre-wrap;
-    font-size: 14px;
-    font-family: 微软雅黑, Arial, Helvetica, sans-serif;
-    color: #aaa;
   }
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+.reader-setting-btn {
+  position: fixed;
+  color: white;
+  right: 10px;
+  bottom: 10px;
+  font-size: 24px;
+  background: gray;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  line-height: 27px;
+  border-radius: 15px;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    opacity: 0.9;
   }
 }

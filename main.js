@@ -19,7 +19,8 @@ function createWindow() {
     }
   });
   win.setAlwaysOnTop(true);
-  win.loadURL(`http://localhost:${appPort}`);
+  // win.loadURL(`http://localhost:${appPort}`);
+  win.loadURL('http://localhost:3000');
 
   ipc.on("init", () => {
     win.webContents.send(

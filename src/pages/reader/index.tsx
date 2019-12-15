@@ -16,10 +16,28 @@ let windowHeight = window.innerHeight;
 
 const ipc = window.require("electron").ipcRenderer;
 
+const BACKGROUND: { [key: string]: string } = {
+  BLACK: "rgb(39, 40, 34)",
+  WHITE: "rgb(255, 255, 255)"
+};
+
+const COLOR: { [key: string]: string } = {
+  GRAY: "#aaa",
+  BLACK: "#rgb(10, 10, 10)"
+};
+
+const SETTINGS: ReaderSettings = {
+  color: "BLACK",
+  size: 14,
+  background: "WHITE"
+};
+
 const Reader: React.FC<Props> = props => {
   const [toolDown, setToolDown] = useState(false);
   const [content, setContent] = useState("");
   const [currentCatalog, setCurrentCatalog] = useState(0);
+  const [settings, setSettings] = useState<ReaderSettings>(SETTINGS);
+  const [style, setStyle] = useState<any>({});
   const contentRef = useRef<any>(null);
 
   useEffect(() => {
@@ -47,15 +65,12 @@ const Reader: React.FC<Props> = props => {
       props.currentBook.current < props.catalog[0].offset
         ? props.catalog[0].offset
         : props.currentBook.current;
-    // console.log(offset);
     for (let i = 0; i < props.catalog.length; i++) {
-      // console.log(offset, props.catalog[i].offset);
       if (offset >= props.catalog[i].offset) {
         let end =
           i < props.catalog.length - 1
             ? props.catalog[i + 1].offset
             : props.content.length;
-        // console.log(end);
         if (offset < end) {
           setCurrentCatalog(i);
           setContent(props.content.substring(offset, end));
@@ -66,12 +81,19 @@ const Reader: React.FC<Props> = props => {
   }, [props.content, props.catalog, props.currentBook]);
 
   useEffect(() => {
+    setStyle({
+      color: COLOR[settings.color] || settings.color,
+      background: BACKGROUND[settings.background] || settings.background,
+      fontSize: settings.size
+    });
+  }, [settings]);
+
+  useEffect(() => {
     window.onresize = () => {
       windowWidth = window.innerWidth;
       windowHeight = window.innerHeight;
     };
     contentRef.current.onmousewheel = (e: any) => {
-      // console.log(e);
       if (e.deltaY > 0) {
         setToolDown(false);
       } else if (e.deltaY < 0) {
@@ -79,8 +101,6 @@ const Reader: React.FC<Props> = props => {
       }
     };
   }, []);
-
-  function createPage() {}
 
   function prevCapter() {
     if (currentCatalog === 0) return;
@@ -122,7 +142,7 @@ const Reader: React.FC<Props> = props => {
   }
 
   return (
-    <div className="reader-page">
+    <div className="reader-page" style={style}>
       <div className={`reader-tool-bar${toolDown ? " down" : ""}`}>
         <Button onClick={prevCapter}>上一章</Button>
         <Link to="/book">
@@ -133,6 +153,7 @@ const Reader: React.FC<Props> = props => {
       <div className="pre-content" ref={contentRef}>
         <pre>{content}</pre>
       </div>
+      <div className="reader-setting-btn">A</div>
     </div>
   );
 };

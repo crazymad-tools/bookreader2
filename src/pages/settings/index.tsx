@@ -11,7 +11,7 @@ const SettingsPage: React.FC<Props> = props => {
       <Link to="/">
         <Button>返回书架</Button>
       </Link>
-      <h4>快捷键</h4>
+      <h4>全局快捷键</h4>
       <p>
         <label>上一章:</label>
         <input value="Crtl + Left" disabled />
