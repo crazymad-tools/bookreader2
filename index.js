@@ -16,7 +16,7 @@ function createWindow() {
     }
   });
   win.setAlwaysOnTop(true);
-  //   win.webContents.openDevTools({ mode: "detach" });
+  // win.webContents.openDevTools({ mode: "detach" });
   // win.loadURL("http://localhost:3001");
   win.loadURL("http://localhost:8083");
 
