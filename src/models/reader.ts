@@ -3,7 +3,8 @@ import ConfigService from "../service/ConfigService";
 const SETTINGS: ReaderSettings = {
   color: "GRAY",
   size: 14,
-  background: "BLACK"
+  background: "BLACK",
+  font: '默认'
 };
 
 export default {

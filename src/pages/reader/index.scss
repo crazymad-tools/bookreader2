@@ -122,3 +122,19 @@
     }
   }
 }
+.font-selection {
+  background: white;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      padding: 5px 8px;
+      transition: 0.3s;
+      cursor: pointer;
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}

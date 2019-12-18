@@ -18,6 +18,13 @@
       "font_class": "plus-circle",
       "unicode": "e781",
       "unicode_decimal": 59265
+    },
+    {
+      "icon_id": "4936478",
+      "name": "check-circle-fill",
+      "font_class": "check-circle-fill",
+      "unicode": "e844",
+      "unicode_decimal": 59460
     }
   ]
 }
