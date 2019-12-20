@@ -18,10 +18,10 @@ function createWindow() {
       preload: path.join(__dirname, "./public/renderer.js")
     }
   });
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
   win.setAlwaysOnTop(true);
   // win.loadURL(`http://localhost:${appPort}`);
-  win.loadURL('http://localhost:3001');
+  win.loadURL('http://localhost:3000');
 
   ipc.on("init", () => {
     win.webContents.send(

@@ -15,4 +15,5 @@ declare interface ReaderSettings {
   size: number,
   color: string
   background: string;
+  font: string;
 }

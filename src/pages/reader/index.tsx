@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
-import { Button } from "../common";
+import { Button, Dropdown } from "../common";
 import { Link } from "react-router-dom";
 import "./index.scss";
 
@@ -16,6 +16,12 @@ let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
 const ipc = window.require("electron").ipcRenderer;
+
+const FONTS: { [key: string]: string } = {
+  默认: "Arial",
+  微软雅黑: "微软雅黑",
+  楷体: "楷体"
+};
 
 const BACKGROUND: { [key: string]: string } = {
   BLACK: "rgb(39, 40, 34)",
@@ -100,6 +106,7 @@ const Reader: React.FC<Props> = props => {
       backgroundColor: BACKGROUND[settings.background] || "",
       backgroundImage: BACKGROUND_IMAGE[settings.background] || "",
       fontSize: settings.size,
+      fontFamily: FONTS[settings.font] || FONTS["默认"]
     });
   }, [props.settings]);
 
@@ -177,6 +184,12 @@ const Reader: React.FC<Props> = props => {
     updateSettings(Object.assign({}, settings));
   }
 
+  function changeFontFamily(font: string) {
+    let settings = props.settings;
+    settings.font = font;
+    updateSettings(Object.assign({}, settings));
+  }
+
   function changeTheme(theme: string[]) {
     let settings = props.settings;
     settings.background = theme[0];
@@ -184,13 +197,13 @@ const Reader: React.FC<Props> = props => {
     updateSettings(Object.assign({}, settings));
   }
 
-  function updateSettings (settings: ReaderSettings) {
+  function updateSettings(settings: ReaderSettings) {
     props.dispatch({
-      type: 'reader/setSettings',
+      type: "reader/setSettings",
       payload: {
         settings: settings
       }
-    })
+    });
   }
 
   return (
@@ -233,7 +246,23 @@ const Reader: React.FC<Props> = props => {
           <Button onClick={changeFontSize.bind(null, true)}>
             <span className="iconfont bookreader-icon-plus-circle" />
           </Button>
-          <Button>字体</Button>
+          <Dropdown direction="top" title="字体">
+            <div className="font-selection">
+              <ul>
+                {Object.keys(FONTS).map((key: string, index: number) => (
+                  <li
+                    key={index}
+                    style={{
+                      color: props.settings.font === key ? "#55aa66" : ""
+                    }}
+                    onClick={e => changeFontFamily(key)}
+                  >
+                    {key}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Dropdown>
         </div>
         <div className="reader-themes">
           {THEMES.map((theme: string[], index: number) => (
